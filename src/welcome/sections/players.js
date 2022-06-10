@@ -1,15 +1,17 @@
 import { useState } from "react";
 
 const Players = (props) => {
+        // Handles the hardness of the game 
     const [amount, setAmount] = useState("singlePlayer")
-
+    // Handles what the user selects
     const handleChange = e => {
         if (e.target.checked) {
             setAmount(e.target.value);
         }
     };
-
+    // Handles when the page is submitted
     function handleSubmit(event) {
+        // records the players settings in session storage
         sessionStorage.setItem("amountOfPlayers", amount);
         props.setScreen("name")
         event.preventDefault()

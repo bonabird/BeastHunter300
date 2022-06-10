@@ -6,16 +6,19 @@ import Beast from './components/Beast';
 import SuperBeast from './components/SuperBeast';
 
 export default function Single(props) {
+    // initialises the value in order to create *SuperBeasts*
     let superBeastMaker = 0
+    // Retrieves the game settings
     let hunter = sessionStorage.getItem("NameOfPlayer");
     let soHard = theRock(sessionStorage.getItem("HardnessOfPlayer"))
     let SizeMatters = parseInt(sessionStorage.getItem("SizeMatters"));
+    // Handles the states of the various elements
     const [tiles, setTiles] = useState(allNewTiles())
     const [tileElements, setTileElements] = useState()
     const [playerPosition, setPlayerPosition] = useState(0)
     const [playerPoints, setPlayerPoints] = useState(0)
     const [beastTracker, setBeastTracker] = useState()
-
+    // Handles the difficulty of the game
     function theRock(maybeHard) {
         if (maybeHard === "easy") {
             return 10;
@@ -25,7 +28,7 @@ export default function Single(props) {
             return 20;
         }
     }
-
+    // Handles what the tiles display
     useEffect(() => {
         setTileElements(oldElements => tiles.map(tile => {
             if (tile.isPlayer) {
@@ -48,13 +51,13 @@ export default function Single(props) {
                 />
             }
         }))
-
+        // Handles the location of the various beasts
         setBeastTracker(oldElements => tiles.map(tile => {
             if (tile.isBeast || tile.isSuperBeast) {
                 return <li className="beastlist">{tile.points}</li>
             }
         }))
-
+        // Handles the players points
         setPlayerPoints(() => {
             for (let i = 0; i < (SizeMatters * SizeMatters); i++) {
                 if (tiles[i].isPlayer) {
@@ -62,11 +65,11 @@ export default function Single(props) {
                 }
             }
         })
-
+        // Handles the key presses
         window.addEventListener("keyup", onKeyup);
         return () => window.removeEventListener('keyup', onKeyup)
     })
-
+    // Handles the creating of new beasts
     useEffect(() => {
         const interval = setInterval(() => {
             whoLetTheDogsOut()
@@ -74,7 +77,7 @@ export default function Single(props) {
 
         return () => clearInterval(interval);
     }, [])
-
+    // Function that gets called and calls a function wit the relevent movement
     function onKeyup(e) {
         switch (e.key) {
             case "ArrowUp":
@@ -91,12 +94,15 @@ export default function Single(props) {
                 break;
         }
     }
-
+    //Funciton in charge of what happens with the beast
     function whereUGonnaGo(x) {
         let y
         for (let i = 0; i < tiles.length; i++) {
+            //cheacks which tiles hold a beast/superbeast
             if (tiles[i].isBeast || tiles[i].isSuperBeast) {
+                // Checks whether the beast has moved
                 if (tiles[i].hasMoved === false) {
+                    // Makes the beast follow the location of the plater
                     if ((playerPosition % SizeMatters - i % SizeMatters) < 0) {
                         y = -1
                     } else if ((playerPosition % SizeMatters - i % SizeMatters) > 0) {
@@ -106,6 +112,7 @@ export default function Single(props) {
                     } else if (i < playerPosition) {
                         y = SizeMatters
                     }
+                    // Checks if the next tile is a player or not
                     if (!tiles[i + y].isBeast && !tiles[i + y].isSuperBeast) {
                         if (playerPosition === (i + y)) {
                             byeFeliciaProtocal(i)
@@ -137,7 +144,7 @@ export default function Single(props) {
             }
         }
     }
-
+    // Moves the player according to the button clicked
     function runForrestRun(x, i, player) {
         if (player) {
             if (tiles[i + x].hasPoint) {
@@ -150,7 +157,7 @@ export default function Single(props) {
         tiles[i + x].hasMoved = true
         return
     }
-
+    // Decides what tile should represent what
     function allNewTiles() {
         const newTiles = []
         const value = randomLocation()
@@ -166,7 +173,7 @@ export default function Single(props) {
         }
         return newTiles
     }
-
+    // Handles the creation of players
     function placePlayer(value) {
         return {
             id: nanoid(),
@@ -176,7 +183,7 @@ export default function Single(props) {
             points: 0
         }
     }
-
+    // Handles the creation of tiles
     function generateNewTiles(i) {
         return {
             id: nanoid(),
@@ -184,7 +191,7 @@ export default function Single(props) {
             hasPoint: Math.ceil(Math.random() * 20) < soHard ? false : true,
         }
     }
-
+    // Handles the creation of beasts
     function makeBeast(value) {
         return {
             id: nanoid(),
@@ -194,7 +201,7 @@ export default function Single(props) {
             points: Math.ceil(Math.random() * 500)
         }
     }
-
+    // Handles the creation of superbeasts
     function makeSuperBeast(value, x) {
         return {
             id: nanoid(),
@@ -204,7 +211,7 @@ export default function Single(props) {
             points: 100 * x
         }
     }
-
+    // Creates a beast/superbeast
     function whoLetTheDogsOut() {
         superBeastMaker = superBeastMaker + 1
         const where = randomLocation()
@@ -217,11 +224,11 @@ export default function Single(props) {
             }
         }
     }
-
+    // Calls a random locatuion on the board
     function randomLocation() {
         return Math.ceil(Math.random() * (SizeMatters * SizeMatters))
     }
-
+    // Checks whether the player is stronger than the best
     function byeFeliciaProtocal(i) {
         if (tiles[i].points > tiles[playerPosition].points) {
             sessionStorage.setItem("playerScore", playerPoints)

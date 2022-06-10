@@ -35,11 +35,3 @@ function App() {
 }
 
 export default App;
-
-// function printerBoi (){
-//   console.log(sessionStorage.getItem("amountOfPlayers"))
-//   console.log(sessionStorage.getItem("NameOfPlayer"))
-//   console.log(sessionStorage.getItem("HardnessOfPlayer"))
-//   console.log(sessionStorage.getItem("SizeMatters"))
-//   <button onClick={printerBoi}>Click Me</button>
-// }

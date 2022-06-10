@@ -1,15 +1,17 @@
 import { useState } from "react";
 
 const Difficulty = (props) => {
+    // Handles the hardness of the game 
     const [hardness, setHardness] = useState("impossible")
-
+    // Handles what the user selects
     const handleChange = e => {
         if (e.target.checked) {
             setHardness(e.target.value);
         }
     };
-
+    // Handles when the page is submitted
     function handleSubmit(event) {
+        // records the players settings in session storage
         sessionStorage.setItem("HardnessOfPlayer", hardness);
         props.setScreen("grid")
         event.preventDefault()

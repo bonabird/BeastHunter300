@@ -1,10 +1,11 @@
 import { useState } from "react";
 
 const Name = (props) => {
+        // Handles the hardness of the game 
     const how = sessionStorage.getItem("amountOfPlayers")
-    const [secretIdentity, setSecretIdentity] = useState(" ")
-    const [anotherSecretIdentity, setAnotherSecretIdentity] = useState(" ")
-
+    const [secretIdentity, setSecretIdentity] = useState("")
+    const [anotherSecretIdentity, setAnotherSecretIdentity] = useState("")
+    // Handles what the user selects
     const handleChange = e => {
         if (e.target.value) {
             setSecretIdentity(e.target.value)
@@ -16,8 +17,9 @@ const Name = (props) => {
             setAnotherSecretIdentity(e.target.value)
         }
     };
-
+    // Handles when the page is submitted
     function handleSubmit(event) {
+        // records the players settings in session storage
         if (how === "playa") {
             sessionStorage.setItem("NameOfSecondPlayer", anotherSecretIdentity)
         }

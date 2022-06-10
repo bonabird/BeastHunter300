@@ -6,11 +6,14 @@ import Beast from './components/Beast';
 import SuperBeast from './components/SuperBeast';
 
 export default function Double(props) {
+    // initialises the value in order to create *SuperBeasts*
     let superBeastMaker = 0
+    // Retrieves the game settings
     let hunter = sessionStorage.getItem("NameOfPlayer");
     let hunterMan = sessionStorage.getItem("NameOfSecondPlayer");
     let soHard = theRock(sessionStorage.getItem("HardnessOfPlayer"))
     let SizeMatters = parseInt(sessionStorage.getItem("SizeMatters"));
+    // Handles the states of the various elements
     const [tiles, setTiles] = useState(allNewTiles())
     const [tileElements, setTileElements] = useState()
     const [onePosition, setOnePosition] = useState(0)
@@ -18,7 +21,7 @@ export default function Double(props) {
     const [playerPoints, setPlayerPoints] = useState(0)
     const [playerTwoPoints, setPlayerTwoPoints] = useState(0)
     const [beastTracker, setBeastTracker] = useState()
-
+    // Handles the difficulty of the game
     function theRock(maybeHard) {
         if (maybeHard === "easy") {
             return 10;
@@ -28,7 +31,7 @@ export default function Double(props) {
             return 20;
         }
     }
-
+    // Handles what the tiles display
     useEffect(() => {
         setTileElements(oldElements => tiles.map(tile => {
             if (tile.isPlayer) {
@@ -51,21 +54,14 @@ export default function Double(props) {
                 />
             }
         }))
-
+        // Handles the location of the various beasts
         setBeastTracker(oldElements => tiles.map(tile => {
             if (tile.isBeast || tile.isSuperBeast) {
                 return <li className="beastlist">{tile.points}</li>
             }
         }))
 
-        // // todo: This is for the high score
-        // setPlayerPoints(oldElements => tiles.map(tile => {
-        //     if (tile.isPlayer && tile.player === 1) {
-        //         return tile.points
-        //     }
-        // }))
-
-        
+        // Handles the players points
         setPlayerPoints(() => {
             for (let i = 0; i < (SizeMatters * SizeMatters); i++) {
                 if (tiles[i].isPlayer && tiles[i].player === 1) {
@@ -73,13 +69,6 @@ export default function Double(props) {
                 }
             }
         })
-
-        // setPlayerTwoPoints(oldElements => tiles.map(tile => {
-        //     if (tile.isPlayer && tile.player === 2) {
-        //         return tile.points
-        //     }
-        // }))
-
         setPlayerTwoPoints(() => {
             for (let i = 0; i < (SizeMatters * SizeMatters); i++) {
                 if (tiles[i].isPlayer && tiles[i].player === 2) {
@@ -87,11 +76,11 @@ export default function Double(props) {
                 }
             }
         })
-
+        // Handles the key presses
         window.addEventListener("keyup", onKeyup);
         return () => window.removeEventListener('keyup', onKeyup)
     })
-
+    // Handles the creating of new beasts
     useEffect(() => {
         const interval = setInterval(() => {
             whoLetTheDogsOut()
@@ -99,7 +88,7 @@ export default function Double(props) {
 
         return () => clearInterval(interval);
     }, [])
-
+    // Function that gets called and calls a function wit the relevent movement
     function onKeyup(e) {
         switch (e.key) {
             case "ArrowUp":
@@ -128,7 +117,7 @@ export default function Double(props) {
                 break;
         }
     }
-
+    //Decides which player is closer to whcih beast
     function frothing() {
         for (let i = 0; i < tiles.length; i++) {
             if (tiles[i].isBeast || tiles[i].isSuperBeast) {
@@ -140,7 +129,7 @@ export default function Double(props) {
             }
         }
     }
-
+    // Moves the beast according to the closest player
     function hunting(i, thePosition, sillyBanana) {
         let y
         if (tiles[i].hasMoved === false) {
@@ -168,7 +157,7 @@ export default function Double(props) {
             tiles[i].hasMoved = false
         }
     }
-
+    // Moves the player
     function whereUGonnaGo(x, z) {
         for (let i = 0; i < tiles.length; i++) {
             if (tiles[i].isPlayer && tiles[i].player === z) {
@@ -207,7 +196,7 @@ export default function Double(props) {
         tiles[i + x].hasMoved = true
         return
     }
-
+    // Decides what tile should represent what
     function allNewTiles() {
         const newTiles = []
         const playerOne = randomLocation()
@@ -226,7 +215,7 @@ export default function Double(props) {
         }
         return newTiles
     }
-
+    // Handles the creation of players
     function placePlayer(value, no) {
         return {
             id: nanoid(),
@@ -237,7 +226,7 @@ export default function Double(props) {
             points: 0
         }
     }
-
+    // Handles the creation of tiles
     function generateNewTiles(i) {
         return {
             id: nanoid(),
@@ -245,7 +234,7 @@ export default function Double(props) {
             hasPoint: Math.ceil(Math.random() * 20) < soHard ? false : true,
         }
     }
-
+    // Handles the creation of beasts
     function makeBeast(value) {
         return {
             id: nanoid(),
@@ -255,7 +244,7 @@ export default function Double(props) {
             points: Math.ceil(Math.random() * 500)
         }
     }
-
+    // Handles the creation of superbeasts
     function makeSuperBeast(value, x) {
         return {
             id: nanoid(),
@@ -265,7 +254,7 @@ export default function Double(props) {
             points: 100 * x
         }
     }
-
+    // Creates a beast/superbeast
     function whoLetTheDogsOut() {
         superBeastMaker = superBeastMaker + 1
         const where = randomLocation()
@@ -278,11 +267,11 @@ export default function Double(props) {
             }
         }
     }
-
+    // Calls a random locatuion on the board
     function randomLocation() {
         return Math.ceil(Math.random() * (SizeMatters * SizeMatters))
     }
-
+    // Checks whether the player is stronger than the best
     function byeFeliciaProtocal(i, sillyBanana) {
         if (sillyBanana === 1) {
             if (tiles[i].points > tiles[onePosition].points) {

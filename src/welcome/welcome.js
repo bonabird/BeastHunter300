@@ -5,6 +5,7 @@ import Name from "./sections/name";
 import Players from "./sections/players";
 
 const Welcome = (props) => {
+    // Handles which page is being displayed
     const [screen, setScreen] = useState("players")
 
     return (

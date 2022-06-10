@@ -1,15 +1,17 @@
 import { useState } from "react";
 
 const Grid = (props) => {
+        // Handles the hardness of the game 
     const [gridTime, setGridTime] = useState("")
-
+    // Handles what the user selects
     const handleChange = e => {
         if (e.target.value) {
             setGridTime(e.target.value)
         }
     };
-
+    // Handles when the page is submitted
     function handleSubmit(event) {
+        // records the players settings in session storage
         sessionStorage.setItem("SizeMatters", gridTime)
         props.setScreen("banana pancakes")
         event.preventDefault()
